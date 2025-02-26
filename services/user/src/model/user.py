@@ -4,7 +4,8 @@ from src.data.init import Base
 class User(Base):
     __tablename__ = "user"
 
-    user_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    username = Column(String, index=True)
-    password = Column(String, index=True)
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=False)
+    phone = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
