@@ -4,8 +4,8 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 app = FastAPI()
 
-secret_user: str = "newphone"
-secret_password: str = "whodis?"
+secret_user: str = "tuilaai"
+secret_password: str = "userhayrider"
 
 basic = HTTPBasic()
 
