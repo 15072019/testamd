@@ -4,7 +4,7 @@ import src.service.user as service
 from error import Duplicate, Missing
 from src.data.schemas import UserBase, UserCreate, UserResponse, Token
 from src.model.user import User
-from src.data import get_db
+from src.data.init import get_db
 from src.service.user import hash_password, create_access_token, verify_password, get_user_by_username_or_phone
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
