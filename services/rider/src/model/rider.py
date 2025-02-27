@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Float
 from src.data.init import Base, engine
+from sqlalchemy.orm import relationship
+
 
 class Rider(Base):
     __tablename__ = "riders"
@@ -11,5 +13,6 @@ class Rider(Base):
     rating = Column(Float, default=5.0)
     type = Column(String)
     license_plate = Column(String, unique=True)
+    bookings = relationship("Booking", back_populates="rider")
 
 Base.metadata.create_all(bind=engine)
