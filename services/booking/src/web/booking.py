@@ -1,21 +1,22 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 import src.service.booking as service
 from error import Duplicate, Missing
 from src.data.schemas import BookingBase, BookingCreate, BookingResponse, BookingUpdate
+from src.model.booking import Booking
 from src.data.init import get_db
 
 router = APIRouter(prefix="/booking")
 
 @router.get("")
 @router.get("/")
-def get_all(db: Session = Depends(get_db)) -> list[BookingBase]:
-    return service.get_all(db)
+def get_all() -> list[BookingBase]:
+    return service.get_all()
 
 @router.get("/{booking_id}")
-def get_one(booking_id: int, db: Session = Depends(get_db)) -> BookingBase:
+def get_one(booking_id: int) -> BookingBase:
     try:
-        return service.get_one(db, booking_id)
+        return service.get_one(booking_id)
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)
 
