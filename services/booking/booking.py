@@ -38,4 +38,4 @@ def consume():
     return {"messages": messages}
 
 if __name__ == "__main__":
-    uvicorn.run("booking:app", reload=True, host="0.0.0.0", port=8004)  # Chạy Booking Service trên port 8004
+    uvicorn.run("booking:app", reload=True, host="0.0.0.0", port=8004) 
