@@ -1,9 +1,9 @@
-from enum import Enum
 from src.data.init import get_db
 from src.model.booking import Booking
 from error import Missing, Duplicate
-from sqlalchemy import exc
+from sqlalchemy import exc, text
 from src.data.schemas import BookingBase, BookingStatus
+
 
 def get_all() -> list[BookingBase]:
     db = next(get_db())
@@ -23,14 +23,6 @@ def create(booking: BookingBase) -> BookingBase:
 
     db = next(get_db())
 
-    user_exists = db.execute(f"SELECT id FROM users WHERE id = {booking.user_id}").fetchone()
-    if not user_exists:
-        raise Missing(msg=f"User ID {booking.user_id} not found")
-
-    if booking.rider_id:
-        rider_exists = db.execute(f"SELECT id FROM riders WHERE id = {booking.rider_id}").fetchone()
-        if not rider_exists:
-            raise Missing(msg=f"Rider ID {booking.rider_id} not found")
 
     db_item = Booking(
         user_id=booking.user_id,
