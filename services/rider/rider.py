@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
     "*",
-    "http://localhost:8001",
+    "http://localhost:8002",
 ]
 
 app = FastAPI()
@@ -22,4 +22,4 @@ app.add_middleware(
 app.include_router(rider_router)
 
 if __name__ == "__main__":
-    uvicorn.run("rider:app", reload=True, host="0.0.0.0", port=8001)  # Chạy đúng file chính
+    uvicorn.run("rider:app", reload=True, host="0.0.0.0", port=8002)  # Chạy đúng file chính

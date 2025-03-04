@@ -1,28 +1,43 @@
 from pydantic import BaseModel
-from typing import Optional
+from enum import Enum
+
+# Define Booking Status Enum
+class BookingStatus(str, Enum):
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    COMPLETE = "complete"
+    CANCELLED = "cancelled"
+
 
 class BookingBase(BaseModel):
-    id: int
-    status: str
+    status: BookingStatus
     phone: str
     fare_estimate: float
     user_id: int
-    rider_id: Optional[int] = None
+    rider_id: int | None = None
+    class Config:
+        from_attributes = True 
 
 class BookingCreate(BaseModel):
     phone: str
     fare_estimate: float
     user_id: int
-    rider_id: Optional[int] = None
-    status: str = "pending" # con de set 4 cai status kia thi hong bit, chac ghi chay
+    rider_id: int | None = None
+    status: BookingStatus = BookingStatus.PENDING  # Default là "pending"
+
+
+class BookingUpdate(BaseModel):
+    status: BookingStatus | None = None  
+    rider_id: int | None = None  
+
 
 class BookingResponse(BaseModel):
     id: int
     phone: str
     fare_estimate: float
-    status: str
+    status: BookingStatus
     user_id: int
-    rider_id: Optional[int]
+    rider_id: int | None
 
     class Config:
         from_attributes = True

@@ -2,8 +2,9 @@ from sqlalchemy import Column, Integer, String
 from src.data.init import Base
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
+
 class Rider(Base):
-    __tablename__ = "Rider"
+    __tablename__ = "riders"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, index=True)
@@ -13,4 +14,5 @@ class Rider(Base):
     vehicle_type = Column(String, index=True)
     license_plate = Column(String, index=True)
 
-    bookings = relationship("Booking", back_populates="rider")
+
+    

@@ -1,10 +1,7 @@
-from fastapi import APIRouter, FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
 import src.service.booking as service
 from error import Duplicate, Missing
-from src.data.schemas import BookingBase, BookingCreate, BookingResponse, BookingUpdate
-from src.model.booking import Booking
-from src.data.init import get_db
+from src.data.schemas import BookingBase
 
 router = APIRouter(prefix="/booking")
 
@@ -14,7 +11,7 @@ def get_all() -> list[BookingBase]:
     return service.get_all()
 
 @router.get("/{booking_id}")
-def get_one(booking_id: int) -> BookingBase:
+def get_one(booking_id: str) -> BookingBase:
     try:
         return service.get_one(booking_id)
     except Missing as exc:
@@ -22,22 +19,22 @@ def get_one(booking_id: int) -> BookingBase:
 
 @router.post("", status_code=201)
 @router.post("/", status_code=201)
-def create(booking: BookingCreate, db: Session = Depends(get_db)) -> BookingBase:
+def create(booking: BookingBase) -> BookingBase:
     try:
-        return service.create(db, booking)
+        return service.create(booking)
     except Duplicate as exc:
         raise HTTPException(status_code=400, detail=exc.msg)
 
 @router.patch("/{booking_id}")
-def modify(booking_id: int, booking: BookingUpdate, db: Session = Depends(get_db)) -> BookingBase:
+def modify(booking_id: str, booking: BookingBase) -> BookingBase:
     try:
-        return service.modify(db, booking_id, booking)
+        return service.modify(booking_id, booking)
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)
 
 @router.delete("/{booking_id}", status_code=204)
-def delete(booking_id: int, db: Session = Depends(get_db)):
+def delete(booking_id: str):
     try:
-        return service.delete(db, booking_id)
+        return service.delete(booking_id)
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)

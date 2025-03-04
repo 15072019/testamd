@@ -3,7 +3,7 @@ from src.data.init import Base
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 class User(Base):
-    __tablename__ = "User"
+    __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True, nullable=False)
@@ -11,4 +11,3 @@ class User(Base):
     phone = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
 
-    bookings = relationship("Booking", back_populates="user")

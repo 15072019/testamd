@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 services = {
     "user": "http://localhost:8001",
     "rider": "http://localhost:8002",
-    "booking":"http://localhost:8004"
+    "booking":"http://localhost:8003"
 }
 
 origins = [
@@ -48,4 +48,4 @@ async def gateway(service: str, path: str, request: Request):
 
 if __name__ == "__main__":
     create_tables()
-    uvicorn.run("api:app", reload=True, host="0.0.0.0", port=8003)
+    uvicorn.run("api:app", reload=True, host="0.0.0.0", port=8000)

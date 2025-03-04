@@ -1,7 +1,7 @@
 from src.data.schemas import BookingBase
 import src.data.booking as data
 from sqlalchemy.orm import Session
-from src.model.booking import Booking
+
 
 def get_all() -> list[BookingBase]:
     return data.get_all()

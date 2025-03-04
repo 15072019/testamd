@@ -3,10 +3,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 user = 'postgres'
-password = 'abc'
+password = 'admin'
 host = 'localhost'
 port = '5432'
 database = 'postgres'
+
 connection_str = f'postgresql://{user}:{password}@{host}:{port}/{database}'
 engine = create_engine(connection_str)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

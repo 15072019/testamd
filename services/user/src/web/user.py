@@ -1,93 +1,53 @@
-from fastapi import APIRouter, FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
+from src.data.schemas import UserCreate, UserResponse, Token, UserBase, UserLogin
 import src.service.user as service
 from error import Duplicate, Missing
-from src.data.schemas import UserBase, UserCreate, UserResponse, Token
-from src.model.user import User
-from src.data.init import get_db
-from src.service.user import hash_password, create_access_token, verify_password, get_user_by_username_or_phone
-from jose import JWTError, jwt
-from fastapi.security import OAuth2PasswordBearer
 
 router = APIRouter(prefix="/user")
 
-@router.get("")
-@router.get("/")
-def get_all() -> list[UserBase]:
-    return service.get_all()
-
-@router.get("/{name}")
-def get_one(name) -> UserBase:
+# Register a new user
+@router.post("/register", status_code=201, response_model=UserResponse)
+def register(user: UserCreate):
     try:
-        return service.get_one(name)
-    except Missing as exc:
-        raise HTTPException(status_code=404, detail=exc.msg)
+        created_user = service.create_user(user)
+        return UserResponse(phone_number=created_user.phone_number)  
 
-@router.post("", status_code=201)
-@router.post("/", status_code=201)
-def create(user: UserBase) -> UserBase:
-    try:
-        return service.create(user)
     except Duplicate as exc:
-        raise HTTPException(status_code=404, detail=exc.msg)
+        raise HTTPException(status_code=409, detail=exc.msg)  
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail="Internal Server Error") 
 
-@router.patch("/{user_id}")
-def modify(user_id: str, user: UserBase) -> UserBase:
+
+# Login a user and return JWT token
+@router.post("/login", response_model=Token)
+def login(user_login: UserLogin):  
     try:
-        return service.modify(user_id, user)
+        token = service.login_user(user_login.phone_number, user_login.password)
+        return token
+    except Missing as exc:
+        raise HTTPException(status_code=401, detail=exc.msg)
+
+# Get all users 
+@router.get("/", response_model=list[UserBase])
+def get_all_users():
+    try:
+        return service.get_all_users()
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to fetch users")
+
+# Get user by phone number
+@router.get("/{phone_number}", response_model=UserBase)
+def get_user(phone_number: str):
+    try:
+        return service.get_user_by_phone(phone_number)
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)
 
-@router.delete("/{user_id}", status_code=204)
-def delete(user_id: str):
+# Booking ride by User ID
+@router.post("/{user_id}/book_ride")
+def book_ride(user_id: int):  
     try:
-        return service.delete(user_id)
+        message = service.booking_ride(user_id)
+        return {"message": message}
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)
-    
-app = FastAPI()
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
-# User Registration
-@app.post("/register", response_model=UserResponse)
-def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    hashed_password = hash_password(user.password)
-    db_user = User(
-        username=user.username,
-        name=user.name,
-        phone=user.phone,
-        hashed_password=hashed_password
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-# User Login
-@app.post("/login", response_model=Token)
-def login_for_access_token(identifier: str, password: str, db: Session = Depends(get_db)):
-    user = get_user_by_username_or_phone(db, identifier)
-    if not user or not verify_password(password, user.hashed_password):
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-    access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
-
-# Dependency to get the current user
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Could not validate credentials")
-    user = get_user_by_username_or_phone(db, username)
-    if user is None:
-        raise HTTPException(status_code=401, detail="User not found")
-    return user
-
-# Protected Route (Get Current User Info)
-@app.get("/me", response_model=UserResponse)
-def read_users_me(current_user: User = Depends(get_current_user)):
-    return current_user

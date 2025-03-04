@@ -1,20 +1,23 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from src.data.init import Base
 from sqlalchemy.orm import relationship, Mapped, mapped_column
+from src.model.user import User
+from src.model.rider import Rider   
+
 
 class Booking(Base):
-    __tablename__ = "Booking"
+    __tablename__ = "booking"
 
     id = Column(Integer, primary_key=True, index=True)
     status = Column(String, index=True) # canceled, assigned, pending, completed
     phone = Column(String,index=True)
-    fare_estimate = Column(float,index=True)
+    fare_estimate = Column(Float,index=True)
 
-    user_id = Column(Integer, ForeignKey('user.id'))
-    rider_id = Column(Integer, ForeignKey('rider.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    rider_id = Column(Integer, ForeignKey('riders.id'))
 
-    user = relationship("User", back_populates="bookings")
-    rider = relationship("Rider", back_populates="bookings")
+    user = relationship(User)
+    rider = relationship(Rider)
 
 
 
