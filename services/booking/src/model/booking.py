@@ -7,10 +7,9 @@ class Booking(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     status = Column(String, index=True)  # canceled, assigned, pending, completed
-    phone = Column(String, index=True)
     fare_estimate = Column(Float, index=True)
 
     user_id = Column(Integer, index=True)
-    rider_id = Column(Integer, index=True)
+    rider_id = Column(Integer, index=True, nullable=True)
 
 Base.metadata.create_all(bind=engine)

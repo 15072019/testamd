@@ -11,7 +11,6 @@ class BookingStatus(str, Enum):
 
 class BookingBase(BaseModel):
     status: BookingStatus
-    phone: str
     fare_estimate: float
     user_id: int
     rider_id: int | None = None
@@ -19,7 +18,6 @@ class BookingBase(BaseModel):
         from_attributes = True 
 
 class BookingCreate(BaseModel):
-    phone: str
     fare_estimate: float
     user_id: int
     rider_id: int | None = None
@@ -33,7 +31,6 @@ class BookingUpdate(BaseModel):
 
 class BookingResponse(BaseModel):
     id: int
-    phone: str
     fare_estimate: float
     status: BookingStatus
     user_id: int

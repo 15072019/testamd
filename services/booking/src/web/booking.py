@@ -19,6 +19,7 @@ def get_one(booking_id: str) -> BookingBase:
 
 @router.post("", status_code=201)
 @router.post("/", status_code=201)
+
 def create(booking: BookingBase) -> BookingBase:
     try:
         return service.create(booking)

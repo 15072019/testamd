@@ -18,17 +18,21 @@ def get_one(booking_id: int) -> BookingBase:
         raise Missing(msg=f"Booking ID {booking_id} not found")
 
 def create(booking: BookingBase) -> BookingBase:
+    
     if not booking:
         return None
 
     db = next(get_db())
-
+    
+    existing_booking = db.query(Booking).filter(Booking.user_id == booking.user_id).first()
+    if existing_booking:
+        raise Duplicate(msg=f"User ID {booking.user_id} already has a booking.")
 
     db_item = Booking(
         user_id=booking.user_id,
         rider_id=booking.rider_id,
         status=BookingStatus.PENDING,
-        fare_estimate=booking.fare_estimate
+        fare_estimate=booking.fare_estimate,
     )
 
     try:
