@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from src.data.init import Base
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import relationship
 from src.model.user import User
 from src.model.rider import Rider   
 
@@ -15,7 +15,6 @@ class Booking(Base):
 
     user_id = Column(Integer, ForeignKey('users.id'))
     rider_id = Column(Integer, ForeignKey('riders.id'))
-
     user = relationship(User)
     rider = relationship(Rider)
 

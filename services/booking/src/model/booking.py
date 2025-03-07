@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from src.data.init import Base, engine
-from services.user.src.model.user import User
-from services.rider.src.model.rider import Rider
+from src.model.user import User
+from src.model.rider import Rider
 
 
 class Booking(Base):
@@ -13,10 +13,9 @@ class Booking(Base):
     fare_estimate = Column(Float, index=True)
 
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
-    rider_id = Column(Integer, ForeignKey("riders.id"), index=True, nullable=True)
+    users = relationship(User)
 
-    # Thiết lập quan hệ
-    user = relationship(User)
-    rider = relationship(Rider)
+    rider_id = Column(Integer, ForeignKey("riders.id"), index=True, nullable=True)
+    riders = relationship(Rider)
 
 Base.metadata.create_all(bind=engine)
