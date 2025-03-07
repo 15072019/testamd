@@ -9,7 +9,7 @@ def get_ride_distance(user_id: str, rider_id: str) -> dict:
     try:
         distance = service.get_distance(user_id, rider_id)
         if distance is None:
-            raise Missing("Không tìm thấy khoảng cách")
+            raise Missing("Cannot find the distance")
         return {"user_id": user_id, "rider_id": rider_id, "distance": distance}
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)
