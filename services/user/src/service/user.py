@@ -17,7 +17,3 @@ def create_user(user: UserCreate) -> UserResponse:
 # Login user and return token
 def login_user(phone_number: str, password: str) -> Token:
     return data.login_user(phone_number, password)
-
-# Book a ride using user_id instead of phone_number
-def booking_ride(user_id: int) -> str:  # Changed from phone_number to user_id
-    return data.booking_ride(user_id)

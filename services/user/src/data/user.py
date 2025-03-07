@@ -53,10 +53,3 @@ def get_all_users(limit: int = 50) -> list[UserBase]:
         users = db.query(User).limit(limit).all()
         return [UserBase(name=user.name, phone_number=user.phone_number) for user in users]
 
-# Booking a ride
-def booking_ride(User_id: int) -> str:
-    with closing(next(get_db())) as db:
-        user = db.query(User).filter(User.id == User_id).first()
-        if not user:
-            raise Missing(msg="User not found")
-        return "Ride booked successfully!"
