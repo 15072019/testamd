@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 services = {
     "user": "http://localhost:8001",
     "rider": "http://localhost:8002",
-    "booking":"http://localhost:8003"
+    "booking":"http://localhost:8003",
+    "ride_matching": "http://localhost:8004"
 }
 
 origins = [

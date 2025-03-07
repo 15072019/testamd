@@ -14,4 +14,7 @@ class Rider(Base):
     type = Column(String)
     license_plate = Column(String, unique=True)
 
+    # bookings = relationship("Booking", back_populates="rider")
+
+
 Base.metadata.create_all(bind=engine)
