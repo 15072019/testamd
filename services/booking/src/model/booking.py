@@ -12,10 +12,10 @@ class Booking(Base):
     status = Column(String, index=True)  # canceled, assigned, pending, completed
     fare_estimate = Column(Float, index=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), index=True, nullable=False)
     users = relationship(User)
 
-    rider_id = Column(Integer, ForeignKey("riders.id"), index=True, nullable=True)
+    rider_id = Column(Integer,ForeignKey('riders.id'), index=True, nullable=False)
     riders = relationship(Rider)
 
 Base.metadata.create_all(bind=engine)

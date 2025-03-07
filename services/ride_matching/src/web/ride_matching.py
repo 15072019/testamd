@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-import src.services.match_service as service
+from src.services import match_service  # Import lại theo kiểu package
 from error import Missing
 
 router = APIRouter(prefix="/ride-matching")
@@ -7,7 +7,7 @@ router = APIRouter(prefix="/ride-matching")
 @router.get("/distance/{user_id}/{rider_id}")
 def get_ride_distance(user_id: str, rider_id: str) -> dict:
     try:
-        distance = service.get_distance(user_id, rider_id)
+        distance = match_service.get_distance(user_id, rider_id)
         if distance is None:
             raise Missing("Cannot find the distance")
         return {"user_id": user_id, "rider_id": rider_id, "distance": distance}
@@ -16,12 +16,12 @@ def get_ride_distance(user_id: str, rider_id: str) -> dict:
 
 @router.get("/fare/{distance}")
 def get_ride_fare(distance: int) -> dict:
-    return {"distance": distance, "fare": service.calculate_fare(distance)}
+    return {"distance": distance, "fare": match_service.calculate_fare(distance)}
 
 @router.get("/match/{user_id}")
 def match_rider(user_id: str) -> dict:
     try:
-        result = service.match_user_to_rider(user_id)
+        result = match_service.match_user_to_rider(user_id)
         if "error" in result:
             raise Missing(result["error"])
         return result

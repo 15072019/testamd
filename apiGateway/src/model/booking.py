@@ -13,9 +13,10 @@ class Booking(Base):
     phone = Column(String,index=True)
     fare_estimate = Column(Float,index=True)
 
-    user_id = Column(Integer, ForeignKey('users.id'))
-    rider_id = Column(Integer, ForeignKey('riders.id'))
+    user_id = Column(Integer, ForeignKey('users.id'),index=True, nullable=False)
     user = relationship(User)
+
+    rider_id = Column(Integer, ForeignKey('riders.id'),index=True, nullable=False)
     rider = relationship(Rider)
 
 

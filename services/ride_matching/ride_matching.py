@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(ride_matching_router, tags=["Booking"])
+app.include_router(ride_matching_router)
 
 if __name__ == "__main__":
-    uvicorn.run("booking:app", reload=True, host="0.0.0.0", port=8004)
+    uvicorn.run("ride_matching:app", reload=True, host="0.0.0.0", port=8004)

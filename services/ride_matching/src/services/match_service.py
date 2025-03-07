@@ -1,5 +1,5 @@
-from ride_matching.src.services.distance import get_nearest_rider, get_distance, DISTANCE_MATRIX
-from ride_matching.src.services.fare import calculate_fare
+from .distance import get_nearest_rider, get_distance, DISTANCE_MATRIX
+from .fare import calculate_fare
 
 def match_user_to_rider(user_id: int):
     """Match with nearest rider."""
