@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 origins = ["*"]
 
 app = FastAPI()
-app.include_router(user_router)
+app.include_router(user_router, tags=["User"])
 
 app.add_middleware(
     CORSMiddleware,

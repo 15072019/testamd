@@ -3,9 +3,8 @@ import src.service.booking as service
 from error import Duplicate, Missing
 from src.data.schemas import BookingBase
 
-router = APIRouter(prefix="/booking")
+router = APIRouter(prefix="/booking", tags=["Booking"])
 
-@router.get("")
 @router.get("/")
 def get_all() -> list[BookingBase]:
     return service.get_all()
@@ -17,9 +16,7 @@ def get_one(booking_id: str) -> BookingBase:
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)
 
-@router.post("", status_code=201)
 @router.post("/", status_code=201)
-
 def create(booking: BookingBase) -> BookingBase:
     try:
         return service.create(booking)

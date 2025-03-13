@@ -42,12 +42,3 @@ def get_user(phone_number: str):
         return service.get_user_by_phone(phone_number)
     except Missing as exc:
         raise HTTPException(status_code=404, detail=exc.msg)
-
-# Booking ride by User ID
-@router.post("/{user_id}/book_ride")
-def book_ride(user_id: int):  
-    try:
-        message = service.booking_ride(user_id)
-        return {"message": message}
-    except Missing as exc:
-        raise HTTPException(status_code=404, detail=exc.msg)

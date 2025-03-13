@@ -18,7 +18,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(rider_router)
+app.include_router(rider_router,tags=["Rider"])
 def json_serializer(data):
     return json.dumps(data).encode('utf-8')
 
