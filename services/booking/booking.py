@@ -47,7 +47,7 @@ def consume_requests():
 
     for msg in consumer:
         ride_requests_cache.append(msg.value)
-        print(f"📥 Booking received ride request: {msg.value}")
+        print(f"Booking received ride request: {msg.value}")
 
 thread = threading.Thread(target=consume_requests, daemon=True)
 thread.start()
@@ -68,7 +68,7 @@ def create_booking():
 
     booking_data = {"user_id": user_id, "booking_status": "confirmed"}
     producer.send('ride_bookings', booking_data)
-    print(f"🚀 Booking created and sent to Kafka: {booking_data}")
+    print(f"Booking created and sent to Kafka: {booking_data}")
 
     return {"status": "Booking created", "user_id": user_id}
 
@@ -88,9 +88,9 @@ def send_to_matching():
 
     ride_matching_data = {"user_id": user_id}
     producer.send('ride_matching_requests', ride_matching_data)
-    print(f"🔄 Sent user_id to ride_matching: {ride_matching_data}")
+    print(f"Sent user_id to ride_matching: {ride_matching_data}")
 
     return {"status": "Sent to ride_matching", "user_id": user_id}
 
 if __name__ == "__main__":
-    uvicorn.run("booking:app", reload=True, host="0.0.0.0", port=8003)
+    uvicorn.run("src.booking:app", reload=True, host="0.0.0.0", port=8003)
