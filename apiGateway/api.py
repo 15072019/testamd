@@ -13,7 +13,7 @@ services = {
     "booking":"http://localhost:8003",
     "ride_matching": "http://localhost:8004"
 }
-
+# Allow requests from any origin
 origins = [
     "*"
 ]

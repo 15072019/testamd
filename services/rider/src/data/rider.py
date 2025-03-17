@@ -27,7 +27,6 @@ def create(rider: RiderBase) -> RiderBase:
         phone_number=rider.phone_number,
         status=rider.status,
         password=rider.password,
-        rating=rider.rating,
         type=rider.type,
         license_plate=rider.license_plate
     )
