@@ -2,7 +2,7 @@ from src.data.init import get_db
 from src.model.booking import Booking
 from error import Missing, Duplicate
 from sqlalchemy import exc, text
-from src.data.schemas import BookingBase, BookingStatus
+from src.data.schemas import BookingBase, BookingStatus, BookingCreate
 
 
 def get_all() -> list[BookingBase]:
@@ -17,7 +17,7 @@ def get_one(booking_id: int) -> BookingBase:
     else:
         raise Missing(msg=f"Booking ID {booking_id} not found")
 
-def create(booking: BookingBase) -> BookingBase:
+def create(booking: BookingCreate) -> BookingCreate:
     
     if not booking:
         return None
@@ -30,9 +30,8 @@ def create(booking: BookingBase) -> BookingBase:
 
     db_item = Booking(
         user_id=booking.user_id,
-        rider_id=booking.rider_id,
         status=BookingStatus.PENDING,
-        fare_estimate=booking.fare_estimate,
+        distance = booking.distance
     )
 
     try:

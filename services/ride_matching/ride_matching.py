@@ -17,65 +17,44 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(ride_matching_router,tags=["Ride matching"])
 
-def json_serializer(data):
-    return json.dumps(data).encode('utf-8')
-
-def json_deserializer(data):
-    return json.loads(data.decode('utf-8'))
+app.include_router(ride_matching_router, tags=["Ride matching"])
 
 producer = KafkaProducer(
-    bootstrap_servers='localhost:9092',
-    api_version=(0, 11, 5),
-    value_serializer=json_serializer
+    bootstrap_servers="localhost:9092",
+    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
 )
 
-booking_cache = []
+@app.get("/ride-matching/process/{booking_id}")
+def process_ride_matching(booking_id: int):
+    from src.web.ride_matching import get_ride_distance
+    
+    try:
+        ride_data = get_ride_distance(booking_id)
+        producer.send("ride-matching-topic", ride_data)
+        return {"message": "Ride matching processed", "data": ride_data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-def consume_bookings():
-    """
-    Lắng nghe Kafka topic 'ride_bookings' để lấy user_id và lưu vào cache.
-    """
-    global booking_cache
-    consumer = KafkaConsumer(
-        'ride_bookings',
-        bootstrap_servers='localhost:9092',
-        auto_offset_reset='earliest',
-        value_deserializer=json_deserializer
-    )
-
-    for msg in consumer:
-        booking_cache.append(msg.value)
-        print(f"📥 Ride Matching received booking: {msg.value}")
-
-thread = threading.Thread(target=consume_bookings, daemon=True)
-thread.start()
-
-@app.post("/ride_matching/match_rider")
-def match_rider():
-    """
-    Nhận booking từ cache, tìm tài xế, và gửi vào Kafka topic 'ride_matches'.
-    """
-    if not booking_cache:
-        raise HTTPException(status_code=400, detail="No bookings available")
-
-    latest_booking = booking_cache.pop(0)
-    user_id = latest_booking.get("user_id")
-
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Invalid booking data")
-
-    matched_ride = {
-        "user_id": user_id,
-        "rider_id": "some_rider_id",
-        "ride_details": "some_details"
-    }
-
-    producer.send('ride_matches', matched_ride)
-    print(f" Ride Matched and sent to Kafka: {matched_ride}")
-
-    return {"status": "Ride matched", "user_id": user_id}
+@app.get("/ride-matching/events")
+def get_ride_matching_events():
+    """Lấy trực tiếp dữ liệu từ Kafka"""
+    try:
+        consumer = KafkaConsumer(
+            "ride-matching-topic",
+            bootstrap_servers="localhost:9092",
+            value_deserializer=lambda m: json.loads(m.decode("utf-8")),
+            auto_offset_reset="earliest",
+            enable_auto_commit=True,
+        )
+        events = []
+        for message in consumer:
+            events.append(message.value)
+            if len(events) >= 6: 
+                break
+        return {"events": events}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("ride_matching:app", reload=True, host="0.0.0.0", port=8004)
+    uvicorn.run("services.ride_matching:app", reload=True, host="0.0.0.0", port=8004)
