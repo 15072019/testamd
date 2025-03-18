@@ -25,7 +25,6 @@ def register_rider(rider: RiderBase) -> RiderBase:
         phone_number=rider.phone_number,
         password=hash_password(rider.password),  # Hash password before storing
         status=rider.status,
-        rating=rider.rating,
         type=rider.type,
         license_plate=rider.license_plate
     )
@@ -43,3 +42,4 @@ def login_rider(rider_login: RiderLogin) -> RiderBase:
         raise Missing(msg="Invalid phone number or password")
     
     return RiderBase(**rider.__dict__)  # Return rider info (excluding password)
+
