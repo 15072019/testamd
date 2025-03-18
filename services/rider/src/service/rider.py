@@ -1,5 +1,5 @@
 import src.data.rider as data
-from src.data.schemas import RiderBase, RiderStatusUpdate
+from src.data.schemas import RiderBase, RiderStatusUpdate, RiderLogin
 
 def get_all() -> list[RiderBase]:
     return data.get_all()
@@ -9,6 +9,9 @@ def get_one(name: str) -> RiderBase:
 
 def create(rider: RiderBase) -> RiderBase:
     return data.create(rider)
+
+def login(rider_login: RiderLogin) -> RiderBase:
+    return data.login(rider_login)
 
 def update_status(rider_id: int, status_update: RiderStatusUpdate) -> RiderBase:
     return data.update_status(rider_id, status_update)

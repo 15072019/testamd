@@ -1,14 +1,17 @@
-from .distance import get_nearest_rider, get_distance, DISTANCE_MATRIX
+from .distance import get_nearest_rider, get_distance
 from .fare import calculate_fare
 
 def match_user_to_rider(user_id: int):
-    """Match with nearest rider."""
+    """Tìm rider gần nhất và tính giá tiền."""
     rider_id = get_nearest_rider(user_id)
     
     if rider_id is None:
-        return {"error": "Cannot find users or riders"}
+        return {"error": "No available rider found"}
 
     distance = get_distance(user_id, rider_id)
+    if distance is None:
+        return {"error": "Cannot determine distance"}
+
     fare = calculate_fare(distance)
 
     return {
@@ -17,4 +20,3 @@ def match_user_to_rider(user_id: int):
         "distance_km": distance,
         "fare_vnd": fare
     }
-

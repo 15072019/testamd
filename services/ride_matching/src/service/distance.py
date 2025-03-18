@@ -36,12 +36,6 @@ def get_nearest_rider(user_id: int) -> int | None:
 
     min_distance = min(distances)
 
-    nearest_riders = []
-    for i in range(len(distances)):
-        if distances[i] == min_distance:
-            nearest_riders.append(i + 1)  
+    nearest_riders = [i + 1 for i in range(len(distances)) if distances[i] == min_distance]
 
-    if nearest_riders:
-        return random.choice(nearest_riders)
-    
-    return None  
+    return random.choice(nearest_riders) if nearest_riders else None  

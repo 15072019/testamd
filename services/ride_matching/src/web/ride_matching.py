@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
 import requests
-from src.services import match_service
+from src.service import match_service
 from error import Missing
 
-router = APIRouter(prefix="/ride-matching")
+router = APIRouter(prefix="/ride-matching", tags=["ride_matching"])
 
-BOOKING_SERVICE_URL = "http://localhost:8003/booking"
+BOOKING_SERVICE_URL = "http://localhost:8003/booking/"
 
 @router.get("/distance/{booking_id}")
 def get_ride_distance(booking_id: int) -> dict:
